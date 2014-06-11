@@ -13,7 +13,7 @@
 $LoLsgname = "";
 $lolmainCHid = "";
 $region = "eune";
-$MSkey = ";
+$MSkey = "";
 $botname = "Test";
 $TSaddress = "127.0.0.1";
 $TSqueryport = "10011";
