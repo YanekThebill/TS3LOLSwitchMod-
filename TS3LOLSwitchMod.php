@@ -204,7 +204,7 @@ foreach ($TSuserdata as $Summoner)
                     "channel_topic" => "test",
                     "channel_codec" => TeamSpeak3::CODEC_SPEEX_ULTRAWIDEBAND,
                     "channel_codec_quality" => 0x08,
-                    "channel_flag_permanent" => true,
+                    "channel_flag_permanent" => false,
                     "channel_password" => false,
                     "cpid" => $lolmainCHid));
 
@@ -213,7 +213,7 @@ foreach ($TSuserdata as $Summoner)
                     "channel_topic" => "Team One",
                     "channel_codec" => TeamSpeak3::CODEC_SPEEX_ULTRAWIDEBAND,
                     "channel_codec_quality" => 0x08,
-                    "channel_flag_permanent" => true,
+                    "channel_flag_permanent" => false,
                     "channel_password" => false,
                     "cpid" => $cid));
 
@@ -222,7 +222,7 @@ foreach ($TSuserdata as $Summoner)
                     "channel_topic" => "Team Two",
                     "channel_codec" => TeamSpeak3::CODEC_SPEEX_ULTRAWIDEBAND,
                     "channel_codec_quality" => 0x08,
-                    "channel_flag_permanent" => true,
+                    "channel_flag_permanent" => false,
                     "channel_password" => false,
                     "cpid" => $cid));
             }
