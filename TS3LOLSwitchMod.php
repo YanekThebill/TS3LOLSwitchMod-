@@ -77,6 +77,7 @@ foreach ($TSuserdata as $Summoner)
 {
     if (!in_array($Summoner['TsNICK'], explode(',', $usersAlreadymoved)))
     {
+        $Summoner['TsNICK'] = urlencode($Summoner['TsNICK']);
 
 
         $response = Unirest::get("https://community-league-of-legends.p.mashape.com/api/v1.0/$region/summoner/retrieveInProgressSpectatorGameInfo/" .
@@ -91,7 +92,7 @@ foreach ($TSuserdata as $Summoner)
                 " was found in the system <br />";
             $ts3_VirtualServer->message("No Game for player " . $Summoner['TsNICK'] .
                 " was found in the system");
-            $userCIDNoGame = $ts3_VirtualServer->clientGetByName("" . $Summoner["TsNICK"] .
+            $userCIDNoGame = $ts3_VirtualServer->clientGetByDbid("" . $Summoner["TsDBID"] .
                 "")->cid;
             //           if ($userCIDNoGame !== ){}
 
@@ -111,8 +112,11 @@ foreach ($TSuserdata as $Summoner)
             $teamOne = array();
             $teamTwo = array();
 
-            array_push($sumgameid, array("playerId" => $new["playerCredentials"]["playerId"],
-                    "gameId" => $new["playerCredentials"]["gameId"]));
+            array_push($sumgameid, array(
+                "playerId" => $new["playerCredentials"]["playerId"],
+                "gameId" => $new["playerCredentials"]["gameId"],
+                "gametype" => $new["game"]["gameType"],
+                "gametypename" => $new["game"]["queueTypeName"]));
 
 
             //TEAM ONE
@@ -138,6 +142,7 @@ foreach ($TSuserdata as $Summoner)
 
             foreach ($TSuserdata as $key => $tsu)
             {
+                $tsu["TsNICK"] = str_replace(' ', '', $tsu["TsNICK"]);
                 foreach ($teamOne as $tone)
                 {
                     if ($tone["summonerInternalName"] == strtolower($tsu["TsNICK"]))
@@ -153,6 +158,7 @@ foreach ($TSuserdata as $Summoner)
             }
             foreach ($TSuserdata as $key => $tsu)
             {
+                $tsu["TsNICK"] = str_replace(' ', '', $tsu["TsNICK"]);
                 foreach ($teamTwo as $ttwo)
                 {
                     if ($ttwo["summonerInternalName"] == strtolower($tsu["TsNICK"]))
@@ -212,7 +218,11 @@ foreach ($TSuserdata as $Summoner)
                         "channel_codec_quality" => 0x08,
                         "channel_flag_permanent" => true,
                         "channel_password" => false,
-                        "cpid" => $lolmainCHid));
+                        "cpid" => $lolmainCHid,
+                        "channel_description" => "[center][b][size=15]== == GAME INFO == ==[/size][/b]\n\n\n[b]** Game Type **[/b]\n " .
+                            $tsUser["gametype"] . "\n\n[b]** Game Type Name **[/b]\n " . $tsUser["gametypename"] .
+                            "\n[/center]"));
+
 
                     $Onecid = $ts3_VirtualServer->channelCreate(array(
                         "channel_name" => "Team One",
@@ -221,7 +231,12 @@ foreach ($TSuserdata as $Summoner)
                         "channel_codec_quality" => 0x08,
                         "channel_flag_permanent" => true,
                         "channel_password" => false,
-                        "cpid" => $cid));
+                        "cpid" => $cid,
+                        "channel_description" =>
+                            "[center][b][size=15]== == TEAM ONE INFO == ==[/size][/b]\n\n\n[b]** Team Members **\n\n " .
+                            $teamOne[0]["summonerInternalName"] . "\n" . $teamOne[1]["summonerInternalName"] .
+                            "\n" . $teamOne[2]["summonerInternalName"] . "\n" . $teamOne[3]["summonerInternalName"] .
+                            "\n" . $teamOne[4]["summonerInternalName"] . "\n"));
 
                     $Twocid = $ts3_VirtualServer->channelCreate(array(
                         "channel_name" => "Team Two",
@@ -230,7 +245,12 @@ foreach ($TSuserdata as $Summoner)
                         "channel_codec_quality" => 0x08,
                         "channel_flag_permanent" => true,
                         "channel_password" => false,
-                        "cpid" => $cid));
+                        "cpid" => $cid,
+                        "channel_description" =>
+                            "[center][b][size=15]== == TEAM TWO INFO == ==[/size][/b]\n\n\n[b]** Team Members **\n\n " .
+                            $teamTwo[0]["summonerInternalName"] . "\n" . $teamTwo[1]["summonerInternalName"] .
+                            "\n" . $teamTwo[2]["summonerInternalName"] . "\n" . $teamTwo[3]["summonerInternalName"] .
+                            "\n" . $teamTwo[4]["summonerInternalName"] . "\n"));
                 }
                 $Onecid = $ts3_VirtualServer->channelGetByName("" . $tsUser["gameId"] . "")->
                     subChannelGetByName("Team One")->cid;
@@ -300,6 +320,11 @@ foreach ($TSuserdata as $Summoner)
                     }
                 }
             }
+            echo '<pre>', print_r($teamTwo, true), '</pre>';
+            echo '<pre>', print_r($teamOne, true), '</pre>';
+            echo '<pre>', print_r($TSuserdata, true), '</pre>';
+
         }
+
     }
 }
